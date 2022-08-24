@@ -27,7 +27,8 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public String login(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response) {
+  public String login(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult,
+    HttpServletResponse response) {
     if (bindingResult.hasErrors()) {
       return "login/loginForm";
     }
@@ -45,5 +46,17 @@ public class LoginController {
     response.addCookie(idCookie);
 
     return "redirect:/";
+  }
+
+  @PostMapping("/logout")
+  public String logout(HttpServletResponse response) {
+    expireCookie(response, "memberId");
+    return "redirect:/";
+  }
+
+  private void expireCookie(HttpServletResponse response, String cookieName) {
+    Cookie cookie = new Cookie(cookieName, null);
+    cookie.setMaxAge(0);
+    response.addCookie(cookie);
   }
 }
